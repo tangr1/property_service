@@ -101,11 +101,11 @@ CCP_FLAGS=
 
 
 #COMAKE UUID
-COMAKE_MD5=d082d7822d172ef8fb46c44bc4059bc9  COMAKE
+COMAKE_MD5=03b6c5e8b27455328600a06cff07fdf4  COMAKE
 
 
 .PHONY:all
-all:comake2_makefile_check client output/bin/client 
+all:comake2_makefile_check client server ufs_server output/bin/client output/bin/server output/bin/ufs_server 
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mall[0m']"
 	@echo "make all done"
 
@@ -127,8 +127,17 @@ clean:ccpclean
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mclean[0m']"
 	rm -rf client
 	rm -rf ./output/bin/client
+	rm -rf server
+	rm -rf ./output/bin/server
+	rm -rf ufs_server
+	rm -rf ./output/bin/ufs_server
 	rm -rf output/bin/client
+	rm -rf output/bin/server
+	rm -rf output/bin/ufs_server
 	rm -rf client_client.o
+	rm -rf server_server.o
+	rm -rf ufs_server_ufs_server.o
+	rm -rf ufs_server_ufs_server_impl.o
 
 .PHONY:dist
 dist:
@@ -196,19 +205,156 @@ client:client_client.o
   ../../../third-64/pcre/lib/libpcrecpp.a \
   ../../../third-64/pcre/lib/libpcreposix.a -lpthread \
   -lcrypto \
-  -lrt -Xlinker "-)" -o client
+  -lrt \
+  -lssl -Xlinker "-)" -o client
 	mkdir -p ./output/bin
 	cp -f --link client ./output/bin
+
+server:server_server.o
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mserver[0m']"
+	$(CXX) server_server.o -Xlinker "-("  ../../../lib2-64/bsl/lib/libbsl.a \
+  ../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
+  ../../../lib2-64/bsl/lib/libbsl_archive.a \
+  ../../../lib2-64/bsl/lib/libbsl_buffer.a \
+  ../../../lib2-64/bsl/lib/libbsl_check_cast.a \
+  ../../../lib2-64/bsl/lib/libbsl_exception.a \
+  ../../../lib2-64/bsl/lib/libbsl_pool.a \
+  ../../../lib2-64/bsl/lib/libbsl_utils.a \
+  ../../../lib2-64/bsl/lib/libbsl_var.a \
+  ../../../lib2-64/bsl/lib/libbsl_var_implement.a \
+  ../../../lib2-64/bsl/lib/libbsl_var_utils.a \
+  ../../../lib2-64/dict/lib/libuldict.a \
+  ../../../lib2-64/ullib/lib/libullib.a \
+  ../../../public/bslext/output/lib/libbsl_bml.a \
+  ../../../public/bslext/output/lib/libbsl_containers_utils.a \
+  ../../../public/bslext/output/lib/libbsl_var_scripting.a \
+  ../../../public/bslext/output/lib/libbsl_var_serializer.a \
+  ../../../public/bslext/output/lib/libbsl_var_vscript.a \
+  ../../../public/bslext/output/lib/libbsl_vs.a \
+  ../../../public/bslext/output/lib/libbslext.a \
+  ../../../public/comlog-plugin/libcomlog.a \
+  ../../../public/comlog-plugin/output/lib/libdfsappender.a \
+  ../../../public/configure/libconfig.a \
+  ../../../public/connectpool/libconnectpool.a \
+  ../../../public/gm/galileo/libgalileo.a \
+  ../../../public/gm/galileo/output/lib/libzookeeper_mt.a \
+  ../../../public/idlcompiler/output/lib/libmcpack_idl.a \
+  ../../../public/mcpack/libmcpack.a \
+  ../../../public/nshead/libnshead.a \
+  ../../../public/odict/libodict.a \
+  ../../../public/spreg/libspreg.a \
+  ../../../public/ub/output/lib/libub.a \
+  ../../../public/ub/output/lib/libub_aserver.a \
+  ../../../public/ub/output/lib/libub_client.a \
+  ../../../public/ub/output/lib/libub_conf.a \
+  ../../../public/ub/output/lib/libub_galileo.a \
+  ../../../public/ub/output/lib/libub_log.a \
+  ../../../public/ub/output/lib/libub_misc.a \
+  ../../../public/ub/output/lib/libub_monitor.a \
+  ../../../public/ub/output/lib/libub_server.a \
+  ../../../public/ub/output/lib/libubex.a \
+  ../../../public/ub/output/lib/libubfw.a \
+  ../../../public/uconv/libuconv.a \
+  ../../../third-64/pcre/lib/libpcre.a \
+  ../../../third-64/pcre/lib/libpcrecpp.a \
+  ../../../third-64/pcre/lib/libpcreposix.a -lpthread \
+  -lcrypto \
+  -lrt \
+  -lssl -Xlinker "-)" -o server
+	mkdir -p ./output/bin
+	cp -f --link server ./output/bin
+
+ufs_server:ufs_server_ufs_server.o \
+  ufs_server_ufs_server_impl.o
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mufs_server[0m']"
+	$(CXX) ufs_server_ufs_server.o \
+  ufs_server_ufs_server_impl.o -Xlinker "-("  ../../../lib2-64/bsl/lib/libbsl.a \
+  ../../../lib2-64/bsl/lib/libbsl_ResourcePool.a \
+  ../../../lib2-64/bsl/lib/libbsl_archive.a \
+  ../../../lib2-64/bsl/lib/libbsl_buffer.a \
+  ../../../lib2-64/bsl/lib/libbsl_check_cast.a \
+  ../../../lib2-64/bsl/lib/libbsl_exception.a \
+  ../../../lib2-64/bsl/lib/libbsl_pool.a \
+  ../../../lib2-64/bsl/lib/libbsl_utils.a \
+  ../../../lib2-64/bsl/lib/libbsl_var.a \
+  ../../../lib2-64/bsl/lib/libbsl_var_implement.a \
+  ../../../lib2-64/bsl/lib/libbsl_var_utils.a \
+  ../../../lib2-64/dict/lib/libuldict.a \
+  ../../../lib2-64/ullib/lib/libullib.a \
+  ../../../public/bslext/output/lib/libbsl_bml.a \
+  ../../../public/bslext/output/lib/libbsl_containers_utils.a \
+  ../../../public/bslext/output/lib/libbsl_var_scripting.a \
+  ../../../public/bslext/output/lib/libbsl_var_serializer.a \
+  ../../../public/bslext/output/lib/libbsl_var_vscript.a \
+  ../../../public/bslext/output/lib/libbsl_vs.a \
+  ../../../public/bslext/output/lib/libbslext.a \
+  ../../../public/comlog-plugin/libcomlog.a \
+  ../../../public/comlog-plugin/output/lib/libdfsappender.a \
+  ../../../public/configure/libconfig.a \
+  ../../../public/connectpool/libconnectpool.a \
+  ../../../public/gm/galileo/libgalileo.a \
+  ../../../public/gm/galileo/output/lib/libzookeeper_mt.a \
+  ../../../public/idlcompiler/output/lib/libmcpack_idl.a \
+  ../../../public/mcpack/libmcpack.a \
+  ../../../public/nshead/libnshead.a \
+  ../../../public/odict/libodict.a \
+  ../../../public/spreg/libspreg.a \
+  ../../../public/ub/output/lib/libub.a \
+  ../../../public/ub/output/lib/libub_aserver.a \
+  ../../../public/ub/output/lib/libub_client.a \
+  ../../../public/ub/output/lib/libub_conf.a \
+  ../../../public/ub/output/lib/libub_galileo.a \
+  ../../../public/ub/output/lib/libub_log.a \
+  ../../../public/ub/output/lib/libub_misc.a \
+  ../../../public/ub/output/lib/libub_monitor.a \
+  ../../../public/ub/output/lib/libub_server.a \
+  ../../../public/ub/output/lib/libubex.a \
+  ../../../public/ub/output/lib/libubfw.a \
+  ../../../public/uconv/libuconv.a \
+  ../../../third-64/pcre/lib/libpcre.a \
+  ../../../third-64/pcre/lib/libpcrecpp.a \
+  ../../../third-64/pcre/lib/libpcreposix.a -lpthread \
+  -lcrypto \
+  -lrt \
+  -lssl -Xlinker "-)" -o ufs_server
+	mkdir -p ./output/bin
+	cp -f --link ufs_server ./output/bin
 
 output/bin/client:
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40moutput/bin/client[0m']"
 	mkdir -p output/bin
 	cp client output/bin
 
+output/bin/server:
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40moutput/bin/server[0m']"
+	mkdir -p output/bin
+	cp server output/bin
+
+output/bin/ufs_server:
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40moutput/bin/ufs_server[0m']"
+	mkdir -p output/bin
+	cp ufs_server output/bin
+
 client_client.o:client.cpp \
   client.h
 	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mclient_client.o[0m']"
 	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o client_client.o client.cpp
+
+server_server.o:server.cpp \
+  server.h
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mserver_server.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o server_server.o server.cpp
+
+ufs_server_ufs_server.o:ufs_server.cpp \
+  ufs_server_data.h \
+  ufs_server_impl.h
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mufs_server_ufs_server.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ufs_server_ufs_server.o ufs_server.cpp
+
+ufs_server_ufs_server_impl.o:ufs_server_impl.cpp \
+  ufs_server_impl.h
+	@echo "[[1;32;40mCOMAKE:BUILD[0m][Target:'[1;32;40mufs_server_ufs_server_impl.o[0m']"
+	$(CXX) -c $(INCPATH) $(DEP_INCPATH) $(CPPFLAGS) $(CXXFLAGS)  -o ufs_server_ufs_server_impl.o ufs_server_impl.cpp
 
 endif #ifeq ($(shell uname -m),x86_64)
 

@@ -7,10 +7,18 @@ CPPFLAGS('-D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION=\\\"1.0.0.0\\\" -DPROJEC
 IDLFLAGS('--compack')
 UBRPCFLAGS('--compack')
 INCPATHS('. ./include ./output ./output/include')
-LDFLAGS('-lpthread -lcrypto -lrt')
+LDFLAGS('-lpthread -lcrypto -lrt -lssl')
 CONFIGS('public/ub@ub_1-1-69-0_PD_BL')
 CONFIGS('public/mcpack@mcpack_1-3-8-1_PD_BL')
 client_sources='client.cpp'
 client_headers='client.h'
+server_sources='server.cpp'
+server_headers='server.h'
+ufs_server_sources='ufs_server.cpp ufs_server_impl.cpp'
+ufs_server_headers='ufs_server_data.h ufs_server_impl.h'
 Application('client',Sources(client_sources))
+Application('server',Sources(server_sources))
+Application('ufs_server',Sources(ufs_server_sources))
 TARGET("output/bin/client", ShellCommands('mkdir -p output/bin', 'cp client output/bin'))
+TARGET("output/bin/server", ShellCommands('mkdir -p output/bin', 'cp server output/bin'))
+TARGET("output/bin/ufs_server", ShellCommands('mkdir -p output/bin', 'cp ufs_server output/bin'))
