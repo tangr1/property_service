@@ -1,0 +1,16 @@
+#edit-mode: -*- python -*-
+#coding:utf-8
+
+WORKROOT('../../../')
+CopyUsingHardLink(True)
+CPPFLAGS('-D_GNU_SOURCE -D__STDC_LIMIT_MACROS -DVERSION=\\\"1.0.0.0\\\" -DPROJECT_NAME=\\\"property-service\\\" -DHAVE_STRLCPY')
+IDLFLAGS('--compack')
+UBRPCFLAGS('--compack')
+INCPATHS('. ./include ./output ./output/include')
+LDFLAGS('-lpthread -lcrypto -lrt')
+CONFIGS('public/ub@ub_1-1-69-0_PD_BL')
+CONFIGS('public/mcpack@mcpack_1-3-8-1_PD_BL')
+client_sources='client.cpp'
+client_headers='client.h'
+Application('client',Sources(client_sources))
+TARGET("output/bin/client", ShellCommands('mkdir -p output/bin', 'cp client output/bin'))
